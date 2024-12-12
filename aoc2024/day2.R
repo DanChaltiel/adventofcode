@@ -5,7 +5,7 @@
 library(tidyverse)
 
 # https://adventofcode.com/2024/day/2
-x = read_lines("day2_input.txt")
+x = read_lines("aoc2024/day2_input.txt")
 
 test = function(x){
   x = (x-lag(x))[-1]

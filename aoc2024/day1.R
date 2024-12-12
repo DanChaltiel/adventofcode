@@ -2,7 +2,7 @@
 
 
 library(tidyverse)
-x = read_delim("day1_input.txt", delim="   ", col_names=FALSE)
+x = read_delim("aoc2024/day1_input.txt", delim="   ", col_names=FALSE)
 sum(abs(sort(x$X1)-sort(x$X1)))
 
 
