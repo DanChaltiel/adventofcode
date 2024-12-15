@@ -1,9 +1,38 @@
 
-read_matrix = function(input){
+read_matrix = function(input, f=as.numeric){
   read_lines(input) %>% 
     str_split("") %>% 
-    map(~matrix(as.numeric(.x), nrow=1)) %>% 
+    map(~matrix(f(.x), nrow=1)) %>% 
     reduce(rbind)
+}
+
+as_matrix = function(x){
+  if(!is.matrix(x)) x = rbind(x)
+  x
+}
+
+neighbours = function(coord, m, diag=FALSE){
+  coord = as_matrix(coord)
+  if(diag){
+    d = expand.grid(row=c(-1, 0, 1), col=c(-1, 0, 1)) %>% as.matrix()
+  } else {
+    d = expand.grid(row=c(-1, 0, 1), col=c(-1, 0, 1)) %>% 
+      filter(row==0 | col==0) %>% 
+      as.matrix()
+  }
+  if(nrow(coord)==1){
+    coord =  coord[rep(1, nrow(d)),]
+  }
+  coord2 = coord + d
+  ok = coord2 %>% apply(1, test_coord, m=m)
+  coord2[ok,]
+}
+
+test_coord = function(coord, m){
+  coord = as_matrix(coord)
+  test_inf = coord[,"row"]>0 & coord[,"col"]>0
+  test_sup = coord[,"row"]<=nrow(m) & coord[,"col"]<=ncol(m)
+  test_inf & test_sup
 }
 
 
