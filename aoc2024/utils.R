@@ -11,8 +11,20 @@ as_matrix = function(x){
   x
 }
 
+row_in_matrix = function(row, mm){
+  apply(row, 1, function(x) {
+    any(x["row"]==mm[,"row"] & x["col"]==mm[,"col"])
+  })
+}
+
+exclude_rows = function(m, rows){
+  m[!row_in_matrix(m, rows), ]
+}
+
 neighbours = function(coord, m, diag=FALSE){
   coord = as_matrix(coord)
+  stopifnot(ncol(coord)==2)
+  colnames(coord) = c("row", "col")
   if(diag){
     d = expand.grid(row=c(-1, 0, 1), col=c(-1, 0, 1)) %>% as.matrix()
   } else {
@@ -25,9 +37,10 @@ neighbours = function(coord, m, diag=FALSE){
   }
   coord2 = coord + d
   ok = coord2 %>% apply(1, test_coord, m=m)
-  coord2[ok,]
+  coord2[ok,] %>% exclude_rows(coord)
 }
 
+#coord est valide pour la matrice m
 test_coord = function(coord, m){
   coord = as_matrix(coord)
   test_inf = coord[,"row"]>0 & coord[,"col"]>0
